@@ -1,0 +1,18 @@
+{
+  "name": "deploy-web-to-s3",
+  "version": "1.0.0",
+  "description": "Helper for deploying client-side code to S3",
+  "main": "index.js",
+  "bin": { "deploy": "bin/deploy" },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Benjamin Horsleben",
+  "license": "MIT",
+  "dependencies": {
+    "es6-shim": "^0.31.2",
+    "fmerge": "^1.2.0",
+    "glob": "^5.0.10",
+    "request": "^2.57.0"
+  }
+}
