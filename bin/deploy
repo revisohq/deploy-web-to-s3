@@ -30,7 +30,7 @@ deployer({
 	},
 	buildFolder: buildFolder,
 	bucketFolder: process.env.AWS_BUCKET_FOLDER || null,
-	addVersionToPath: process.env.AWS_SKIP_VERSION_IN_PATH == 'true',
+	addVersionToPath: process.env.AWS_ADD_VERSION_TO_PATH == 'true',
 	versionPrefix: process.env.AWS_VERSION_PREFIX || null,
 });
 
