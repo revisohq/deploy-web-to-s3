@@ -11,7 +11,7 @@ Usage
 	export AWS_ACCESS_KEY=<access key>
 	export AWS_SECRET_KEY=<secret key>
 
-	deploy <folder to upload>
+	deploy-web-to-s3 <folder to upload>
 
 
 Assumptions

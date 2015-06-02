@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A tool for easily recursively uploading a directory with client-side files to S3",
   "main": "index.js",
-  "bin": { "deploy": "bin/deploy" },
+  "bin": "bin/deploy-web-to-s3.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
