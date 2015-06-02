@@ -16,11 +16,11 @@ module.exports = function(options) {
 	}
 
 	var useVersionAsFolder;
-	if(options.addVersionJSON) {
+	if(options.addVersionToPath) {
 		useVersionAsFolder = versionPromise
 			.then(function(version) {
-				if(versionPrefix) {
-					version = versionPrefix + '-' + version;
+				if(options.versionPrefix) {
+					version = options.versionPrefix + '-' + version;
 				}
 				bucketUrl += version + '/';
 			});
