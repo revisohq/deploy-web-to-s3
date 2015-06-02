@@ -43,8 +43,7 @@ module.exports = function(options) {
 		})
 		.catch(function(err) {
 			if(err.code == 'ENOENT') {
-				return exit('Sledgehammer have not been built yet. Please run '+
-					'`npm run build` first.');
+				return exit('The build-folder does not exist');
 			}
 			throw err;
 		})

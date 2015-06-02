@@ -14,6 +14,18 @@ Usage
 	deploy <folder to upload>
 
 
+Assumptions
+-----------
+
+All files in the provided build-folder will be uploaded.
+
+Any files ending with `.json` or called `index.html` (both case-sensitive) will
+have no cache, all other files will have a 30-day cache header.
+
+A file called `version.json` will be added to the root of the folder. This file
+contains the current git-sha and the current timestamp.
+
+
 Required Options
 ----------------
 
