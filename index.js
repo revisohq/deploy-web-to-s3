@@ -28,6 +28,11 @@ module.exports = function(options) {
 		useVersionAsFolder = Promise.resolve();
 	}
 
+	var gzipExtensions = [];
+	if(options.gzipExtensions) {
+		gzipExtensions = options.gzipExtensions.split(',');
+	}
+
 	var aws = options.aws;
 	var uploader = new S3Uploader(aws.bucket, aws.key, aws.secret);
 
@@ -39,6 +44,7 @@ module.exports = function(options) {
 			return uploader(options.buildFolder, {
 				pathPrefix: bucketUrl,
 				getHeadersForFile: getHeadersForFile,
+				gzipExtensions: gzipExtensions,
 			});
 		})
 		.catch(function(err) {
@@ -47,8 +53,8 @@ module.exports = function(options) {
 			}
 			throw err;
 		})
-		.then(function() {
-			console.log('All uploaded');
+		.then(function(files) {
+			console.log('%d files uploaded', files.length);
 		}, function(err) {
 			return exit('Failed with error:\n', err.stack || err.message || err);
 		});

@@ -32,6 +32,7 @@ deployer({
 	bucketFolder: process.env.AWS_BUCKET_FOLDER || null,
 	addVersionToPath: process.env.AWS_ADD_VERSION_TO_PATH == 'true',
 	versionPrefix: process.env.AWS_VERSION_PREFIX || null,
+	gzipExtensions: process.env.AWS_GZIP_EXTENSIONS || null,
 });
 
 function exit(msg) {
