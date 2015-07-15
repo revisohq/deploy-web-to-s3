@@ -78,8 +78,8 @@ A static prefix to add before the version. It is only used if
 
 A list of file extensions that should be gzipped before uploaded to S3.
 Gzipped files will have their `content-encoding` set to `gzip` when served.
-Note: This also means that user agents that does not support the `gzip` content
+*Note: This also means that user agents that does not support the `gzip` content
 encoding will not be able to receive this file as S3 doesn't support automatic 
-content negotiation.
+content negotiation.*
 
 	export AWS_GZIP_EXTENSIONS=.js,.css
