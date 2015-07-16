@@ -22,6 +22,11 @@ if(!process.env.AWS_BUCKET) {
 	return;
 }
 
+var gzipExtensions = null;
+if(process.env.AWS_GZIP_EXTENSIONS) {
+	gzipExtensions = process.env.AWS_GZIP_EXTENSIONS.split(',');
+}
+
 deployer({
 	aws: {
 		bucket: process.env.AWS_BUCKET,
@@ -32,6 +37,7 @@ deployer({
 	bucketFolder: process.env.AWS_BUCKET_FOLDER || null,
 	addVersionToPath: process.env.AWS_ADD_VERSION_TO_PATH == 'true',
 	versionPrefix: process.env.AWS_VERSION_PREFIX || null,
+	gzipExtensions: gzipExtensions,
 });
 
 function exit(msg) {

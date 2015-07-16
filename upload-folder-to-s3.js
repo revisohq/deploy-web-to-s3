@@ -1,8 +1,11 @@
 var requestModule = require('request')
 var glob = require('glob')
 var pathModule = require('path')
-var merge = require('fmerge')
+var fmerge = require('fmerge')
 var fs = require('fs')
+var tmp = require('tmp')
+var zlib = require('zlib')
+var mime = require('mime-types')
 
 var _30daysInSeconds = 30 * 24 * 3600
 
@@ -22,22 +25,68 @@ module.exports = function(bucket, accessKey, secretKey) {
 		if(!remotePath.endsWith('/')) {
 			remotePath += '/';
 		}
-		return listFilesInFolder(path)
-			.then(function(files) {
-				return Promise.all(files.map(function(file) {
-					var userHeaders = options.getHeadersForFile && options.getHeadersForFile(file)
 
-					var localPath = pathModule.join(path, file)
+		var gzipExtensions = options.gzipExtensions || []
+
+		return listFilesInFolder(path)
+			.then(function(filenames) {
+				return filenames.map(function(filename) {
+					return {
+						filename: filename,
+						localPath: pathModule.join(path, filename),
+						headers: { 'content-type': mime.lookup(filename) },
+					}
+				})
+			})
+			.then(function(fileObjects) {
+				return Promise.all(fileObjects.map(function(fileObject) {
+					return new Promise(function(resolve, reject) {
+						if(shouldGzip(gzipExtensions, fileObject.filename)) {
+							// Create a tmp file to gzip to. We do this because amazon
+							// requires us to specify a 'content-length'
+							tmp.file(function(err, tmpPath, tmpFd) {
+								if(err) {
+									return reject(err)
+								}
+
+								console.log('gzip compressing "%s"', fileObject.filename)
+
+								fs.createReadStream(fileObject.localPath)
+									.pipe(zlib.createGzip())
+									.pipe(fs.createWriteStream(null, {fd: tmpFd}))
+									.on('finish', function() {
+										resolve(fmerge(fileObject, {
+											localPath: tmpPath,
+											headers: { 'content-encoding': 'gzip' },
+										}))
+									})
+									.on('error', reject)
+							})
+						} else {
+							resolve(fileObject)
+						}
+					})
+				}))
+			})
+			.then(function(fileObjects) {
+				return Promise.all(fileObjects.map(function(fileObject) {
+					var userHeaders = options.getHeadersForFile && options.getHeadersForFile(fileObject.filename)
+					var localPath = fileObject.localPath
 					return stat(localPath)
 						.then(function(stat) {
-							var suggestedHeaders = {
+							var suggestedHeaders = fmerge({
 								'content-length': stat.size,
 								'cache-control': 'max-age=' + _30daysInSeconds,
-							}
-							var headers = merge(suggestedHeaders, userHeaders)
-							return uploadFile(localPath, remotePath + file, headers, request)
+							}, fileObject.headers)
+
+							var headers = fmerge(suggestedHeaders, userHeaders)
+							var remoteFilePath = remotePath + fileObject.filename
+
+							console.log('uploading "%s"', fileObject.filename)
+							return uploadFile(localPath, remoteFilePath, headers, request)
 						})
 				}))
+					.then(function() {return fileObjects})
 			})
 	}
 }
@@ -50,13 +99,20 @@ function listFilesInFolder(path) {
 	})
 }
 
+function shouldGzip(extensions, file) {
+	return extensions.some(function(extension) {
+		return file.endsWith(extension);
+	});
+}
+
 function uploadFile(local, remote, headers, request) {
 	return new Promise(function(resolve, reject) {
+
 		fs.createReadStream(local).pipe(request.put(remote, {
 			headers: headers,
 		}, function(err, response) {
 			if(err) return reject(err)
-			if(response.statusCode >= 300) return reject(new Error('Bad status: ' + response.statusCode))
+			if(response.statusCode >= 300) return reject(new Error('Failed to upload "' + remote + '", response: ' + response.body))
 			resolve()
 		}))
 	})

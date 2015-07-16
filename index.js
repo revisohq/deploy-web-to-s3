@@ -39,6 +39,7 @@ module.exports = function(options) {
 			return uploader(options.buildFolder, {
 				pathPrefix: bucketUrl,
 				getHeadersForFile: getHeadersForFile,
+				gzipExtensions: options.gzipExtensions,
 			});
 		})
 		.catch(function(err) {
@@ -47,8 +48,8 @@ module.exports = function(options) {
 			}
 			throw err;
 		})
-		.then(function() {
-			console.log('All uploaded');
+		.then(function(files) {
+			console.log('%d files uploaded', files.length);
 		}, function(err) {
 			return exit('Failed with error:\n', err.stack || err.message || err);
 		});
