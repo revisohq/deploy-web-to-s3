@@ -28,11 +28,6 @@ module.exports = function(options) {
 		useVersionAsFolder = Promise.resolve();
 	}
 
-	var gzipExtensions = [];
-	if(options.gzipExtensions) {
-		gzipExtensions = options.gzipExtensions.split(',');
-	}
-
 	var aws = options.aws;
 	var uploader = new S3Uploader(aws.bucket, aws.key, aws.secret);
 
@@ -44,7 +39,7 @@ module.exports = function(options) {
 			return uploader(options.buildFolder, {
 				pathPrefix: bucketUrl,
 				getHeadersForFile: getHeadersForFile,
-				gzipExtensions: gzipExtensions,
+				gzipExtensions: options.gzipExtensions,
 			});
 		})
 		.catch(function(err) {
