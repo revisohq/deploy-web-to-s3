@@ -5,6 +5,12 @@ var S3Uploader = require('./upload-folder-to-s3');
 var getBuildVersion = require('./get-build-version');
 
 module.exports = function(options) {
+	function verboseLog() {
+		if(options.verbose) {
+			console.log.apply(console, arguments)
+		}
+	}
+
 	var versionPromise = getBuildVersion();
 	var bucketUrl = '';
 
@@ -29,7 +35,9 @@ module.exports = function(options) {
 	}
 
 	var aws = options.aws;
-	var uploader = new S3Uploader(aws.bucket, aws.key, aws.secret);
+	var uploader = new S3Uploader(aws.bucket, aws.key, aws.secret, {
+		verboseLog: verboseLog
+	});
 
 	Promise.all([
 		useVersionAsFolder,
