@@ -7,6 +7,8 @@ var tmp = require('tmp')
 var zlib = require('zlib')
 var mime = require('mime-types')
 
+var normalizeHeaders = require('./normalize-headers')
+
 var _30daysInSeconds = 30 * 24 * 3600
 
 module.exports = function(bucket, accessKey, secretKey) {
@@ -74,12 +76,12 @@ module.exports = function(bucket, accessKey, secretKey) {
 					var localPath = fileObject.localPath
 					return stat(localPath)
 						.then(function(stat) {
-							var suggestedHeaders = fmerge({
+							var statHeaders = {
 								'content-length': stat.size,
 								'cache-control': 'max-age=' + _30daysInSeconds,
-							}, fileObject.headers)
+							}
 
-							var headers = fmerge(suggestedHeaders, userHeaders)
+							var headers = fmerge(normalizeHeaders(statHeaders), normalizeHeaders(fileObject.headers), normalizeHeaders(userHeaders))
 							var remoteFilePath = remotePath + fileObject.filename
 
 							console.log('uploading "%s"', fileObject.filename)
