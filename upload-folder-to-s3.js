@@ -11,7 +11,7 @@ var normalizeHeaders = require('./normalize-headers')
 
 var _30daysInSeconds = 30 * 24 * 3600
 
-module.exports = function(bucket, accessKey, secretKey) {
+module.exports = function(bucket, accessKey, secretKey, instanceOptions) {
 	var url = 'https://' + bucket + '.s3.amazonaws.com/'
 
 	var request = requestModule.defaults({
@@ -51,7 +51,7 @@ module.exports = function(bucket, accessKey, secretKey) {
 									return reject(err)
 								}
 
-								console.log('gzip compressing "%s"', fileObject.filename)
+								instanceOptions.verboseLog('gzip compressing "%s"', fileObject.filename)
 
 								fs.createReadStream(fileObject.localPath)
 									.pipe(zlib.createGzip())
@@ -84,7 +84,7 @@ module.exports = function(bucket, accessKey, secretKey) {
 							var headers = fmerge(normalizeHeaders(statHeaders), normalizeHeaders(fileObject.headers), normalizeHeaders(userHeaders))
 							var remoteFilePath = remotePath + fileObject.filename
 
-							console.log('uploading "%s"', fileObject.filename)
+							instanceOptions.verboseLog('uploading "%s"', fileObject.filename)
 							return uploadFile(localPath, remoteFilePath, headers, request)
 						})
 				}))
