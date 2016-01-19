@@ -20,7 +20,6 @@ module.exports = function(bucket, accessKey, secretKey, instanceOptions) {
 			secret: secretKey,
 			bucket: bucket,
 		},
-		followAllRedirects: true,
 	})
 
 	return function(path, options) {
@@ -97,6 +96,13 @@ module.exports = function(bucket, accessKey, secretKey, instanceOptions) {
 
 						instanceOptions.verboseLog('uploading "%s"', fileObject.filename)
 						return uploadFile(localPath, remoteFilePath, headers, request)
+							.then(data => {
+								instanceOptions.verboseLog(`done uploading "${fileObject.filename}"`)
+								return data
+							}, error => {
+								instanceOptions.verboseLog(`failed uploading "${fileObject.filename}"`)
+								throw error
+							})
 					})
 			}))
 				.then(function() {return fileObjects})
@@ -125,6 +131,12 @@ function uploadFile(local, remote, headers, request) {
 			headers: headers,
 		}, function(err, response) {
 			if(err) return reject(err)
+
+			// Temporary redirect. S3 does this sometimes.
+			if(response.statusCode == 307) {
+				return uploadFile(local, response.headers.location, headers, request)
+			}
+
 			if(response.statusCode >= 300) return reject(new Error('Failed to upload "' + remote + '", response: ' + response.body))
 			resolve()
 		}))
