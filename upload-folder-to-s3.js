@@ -20,6 +20,7 @@ module.exports = function(bucket, accessKey, secretKey, instanceOptions) {
 			secret: secretKey,
 			bucket: bucket,
 		},
+		followAllRedirects: true,
 	})
 
 	return function(path, options) {
