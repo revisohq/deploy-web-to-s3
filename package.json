@@ -4,14 +4,14 @@
   "description": "A tool for easily recursively uploading a directory with client-side files to S3",
   "repository": {
     "type": "git",
-    "url": "git@github.com:debitoor/deploy-web-to-s3.git"
+    "url": "git@github.com:revisohq/deploy-web-to-s3.git"
   },
   "main": "index.js",
   "bin": "bin/deploy-web-to-s3.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Benjamin Horsleben",
+  "author": "Reviso",
   "license": "MIT",
   "dependencies": {
     "es6-shim": "^0.31.2",
