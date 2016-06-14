@@ -83,3 +83,15 @@ encoding will not be able to receive this file as S3 doesn't support automatic
 content negotiation.*
 
 	export AWS_GZIP_EXTENSIONS=.js,.css
+
+
+### AWS_EXCLUDE
+
+A comma-separated list of file names to exclude when globbing. If any of the
+files contains one of the words in the list, it will not be uploaded. It is
+matched based on the `<folder to upload>`.
+
+	# This will exclude any files whose path from <folder to upload> and deeper
+	# contains the words ['node_modules','upload-script']
+	export AWS_EXCLUDE=node_modules,upload-script
+	deploy-web-to-s3 <folder to upload>
