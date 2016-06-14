@@ -29,8 +29,9 @@ module.exports = function(bucket, accessKey, secretKey, instanceOptions) {
 		}
 
 		var gzipExtensions = options.gzipExtensions || []
+		var exclude = options.exclude || []
 
-		return listFilesInFolder(path)
+		return listFilesInFolder(path, { exclude })
 			.then(prepareFileInfo)
 			.then(gzipIfNeeded)
 			.then(uploadFiles)
@@ -110,10 +111,11 @@ module.exports = function(bucket, accessKey, secretKey, instanceOptions) {
 	}
 }
 
-function listFilesInFolder(path) {
+function listFilesInFolder(path, options) {
 	return new Promise(function(resolve, reject) {
 		glob('**/*', { cwd: path, nodir: true }, function(err, files) {
-			err ? reject(err) : resolve(files)
+			var filteredFiles = files.filter(file => !options.exclude.some(filter => file.includes(filter)))
+			err ? reject(err) : resolve(filteredFiles)
 		})
 	})
 }

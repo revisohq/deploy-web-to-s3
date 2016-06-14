@@ -48,6 +48,7 @@ module.exports = function(options) {
 				pathPrefix: bucketUrl,
 				getHeadersForFile: getHeadersForFile,
 				gzipExtensions: options.gzipExtensions,
+				exclude: options.exclude,
 			});
 		})
 		.catch(function(err) {
