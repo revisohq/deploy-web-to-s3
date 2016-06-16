@@ -1,6 +1,6 @@
 {
   "name": "deploy-web-to-s3",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "A tool for easily recursively uploading a directory with client-side files to S3",
   "repository": {
     "type": "git",
