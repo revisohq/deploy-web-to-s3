@@ -17,7 +17,8 @@ Usage
 Assumptions
 -----------
 
-All files in the provided build-folder will be uploaded.
+All files in the provided build-folder will be uploaded, unless they are
+blacklisted (see the AWS_EXCLUDE section).
 
 Any files ending with `.json` or called `index.html` (both case-sensitive) will
 have no cache, all other files will have a 30-day cache header.
