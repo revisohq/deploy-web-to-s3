@@ -41,7 +41,7 @@ module.exports = function(bucket, accessKey, secretKey, instanceOptions) {
 				return {
 					filename: filename,
 					localPath: pathModule.join(path, filename),
-					headers: { 'content-type': mime.lookup(filename) },
+					headers: { 'content-type': addCharsetToContentType(mime.lookup(filename)) },
 				}
 			})
 		}
@@ -151,4 +151,11 @@ function stat(path) {
 			err ? reject(err) : resolve(stat)
 		})
 	})
+}
+
+function addCharsetToContentType(mimeType) {
+	if(mimeType.startsWith('text/') || mimeType == 'application/json' || mimeType == 'application/javascript') {
+		mimeType += '; charset=utf-8'
+	}
+	return mimeType
 }
