@@ -154,8 +154,13 @@ function stat(path) {
 }
 
 function addCharsetToContentType(mimeType) {
+	if(!mimeType || !mimeType.startsWith) {
+		return mimeType
+	}
+
 	if(mimeType.startsWith('text/') || mimeType == 'application/json' || mimeType == 'application/javascript') {
 		mimeType += '; charset=utf-8'
 	}
+
 	return mimeType
 }
