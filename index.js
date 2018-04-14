@@ -49,6 +49,7 @@ module.exports = function(options) {
 				getHeadersForFile: getHeadersForFile,
 				gzipExtensions: options.gzipExtensions,
 				exclude: options.exclude,
+				cacheControl: options.cacheControl,
 			});
 		})
 		.catch(function(err) {
