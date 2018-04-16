@@ -32,8 +32,6 @@ if(process.env.AWS_EXCLUDE) {
 	exclude = process.env.AWS_EXCLUDE.split(',')
 }
 
-var _30_DAYS_IN_SECONDS = 30 * 24 * 3600;
-
 deployer({
 	aws: {
 		bucket: process.env.AWS_BUCKET,
@@ -46,7 +44,7 @@ deployer({
 	versionPrefix: process.env.AWS_VERSION_PREFIX || null,
 	gzipExtensions: gzipExtensions,
 	exclude,
-	cacheControl: process.env.AWS_CACHE_CONTROL || _30_DAYS_IN_SECONDS,
+	cacheControl: process.env.AWS_CACHE_CONTROL,
 });
 
 function exit(msg) {

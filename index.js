@@ -44,12 +44,14 @@ module.exports = function(options) {
 		addVersionJSON(versionPromise, options.buildFolder),
 	])
 		.then(function() {
+			var _30_DAYS_IN_SECONDS = 30 * 24 * 3600;
+
 			return uploader(options.buildFolder, {
 				pathPrefix: bucketUrl,
 				getHeadersForFile: getHeadersForFile,
 				gzipExtensions: options.gzipExtensions,
 				exclude: options.exclude,
-				cacheControl: options.cacheControl,
+				cacheControl: options.cacheControl || _30_DAYS_IN_SECONDS,
 			});
 		})
 		.catch(function(err) {
