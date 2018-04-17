@@ -9,8 +9,6 @@ var mime = require('mime-types')
 
 var normalizeHeaders = require('./normalize-headers')
 
-var _30daysInSeconds = 30 * 24 * 3600
-
 module.exports = function(bucket, accessKey, secretKey, instanceOptions) {
 	var url = 'https://' + bucket + '.s3.amazonaws.com/'
 
@@ -85,11 +83,12 @@ module.exports = function(bucket, accessKey, secretKey, instanceOptions) {
 			return Promise.all(fileObjects.map(function(fileObject) {
 				var userHeaders = options.getHeadersForFile && options.getHeadersForFile(fileObject.filename)
 				var localPath = fileObject.localPath
+				var cacheControl = options.cacheControl
 				return stat(localPath)
 					.then(function(stat) {
 						var statHeaders = {
 							'content-length': stat.size,
-							'cache-control': 'max-age=' + _30daysInSeconds,
+							'cache-control': 'max-age=' + cacheControl,
 						}
 
 						var headers = fmerge(normalizeHeaders(statHeaders), normalizeHeaders(fileObject.headers), normalizeHeaders(userHeaders))

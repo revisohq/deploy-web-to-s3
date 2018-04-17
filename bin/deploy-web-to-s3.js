@@ -44,6 +44,7 @@ deployer({
 	versionPrefix: process.env.AWS_VERSION_PREFIX || null,
 	gzipExtensions: gzipExtensions,
 	exclude,
+	cacheControl: process.env.AWS_CACHE_CONTROL,
 });
 
 function exit(msg) {
