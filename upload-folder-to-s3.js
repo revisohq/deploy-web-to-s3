@@ -7,6 +7,9 @@ var tmp = require('tmp')
 var zlib = require('zlib')
 var mime = require('mime-types')
 
+// Add license extension. This is often created by webpack
+mime.types["license"] = "text/plain"
+
 var normalizeHeaders = require('./normalize-headers')
 
 module.exports = function(bucket, accessKey, secretKey, instanceOptions) {
