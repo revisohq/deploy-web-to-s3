@@ -39,10 +39,15 @@ module.exports = function(bucket, accessKey, secretKey, instanceOptions) {
 
 		function prepareFileInfo(filenames) {
 			return filenames.map(function(filename) {
+				var mimeType = mime.lookup(filename)
+				if(!mimeType) {
+					instanceOptions.verboseLog(`Could not find mime-type for file ${filename}`)
+				}
+				var contentType = addCharsetToContentType(mimeType)
 				return {
 					filename: filename,
 					localPath: pathModule.join(path, filename),
-					headers: { 'content-type': addCharsetToContentType(mime.lookup(filename)) },
+					headers: { 'content-type': contentType },
 				}
 			})
 		}
